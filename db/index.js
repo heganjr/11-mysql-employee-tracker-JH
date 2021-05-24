@@ -6,7 +6,7 @@ const connection = mysql.createConnection({
   port: 3306,
   user: "root",
   password: "Eagles!168",
-  database: "greatBayDB",
+  database: "employeeDB",
 });
 
 // create database based on readme instructions - DONE
