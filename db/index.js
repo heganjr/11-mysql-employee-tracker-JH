@@ -1,3 +1,13 @@
+const mysql = require("mysql2");
+const inquirer = require(`inquirer`)
+
+const connection = mysql.createConnection({
+  host: "localhost",
+  port: 3306,
+  user: "root",
+  password: "Eagles!168",
+  database: "greatBayDB",
+});
 
 // create database based on readme instructions - DONE
 

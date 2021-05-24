@@ -1,0 +1,24 @@
+{
+  "name": "12-mysq-employee-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heganjr/11-mysql-employee-tracker-JH.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heganjr/11-mysql-employee-tracker-JH/issues"
+  },
+  "homepage": "https://github.com/heganjr/11-mysql-employee-tracker-JH#readme",
+  "dependencies": {
+    "inquirer": "^8.1.0",
+    "mysql2": "^2.2.5"
+  }
+}
