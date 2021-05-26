@@ -1,20 +1,25 @@
 const mysql = require("mysql2");
 const inquirer = require(`inquirer`);
+const util = require("util");
+const { connect } = require("http2");
+// additional methods to set up as a promise to fix query promise issue
 // linking modules
 
 const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "Eagles!168",
+  password: "jacob",
   database: "employeeDB",
 });
 
-// connection.connect((err) => {
-//   if (err) throw err;
-//   console.log(`connected to ${connection.config.database}`);
-// });
-// Confuses prompt with an additional line
+connection.connect((err) => {
+  if (err) throw err;
+  console.log(`connected to ${connection.config.database}`);
+});
+
+connection.query = util.promisify(connection.query)
+// set up of async and await for connection.query
 
 async function initialise() {
   const answers = await inquirer.prompt([
@@ -63,8 +68,16 @@ async function addIntoEmployeeDB() {
 }
 
 async function employeeAdd() {
-  const employeeAnswers = await inquirer.prompt(
-  [
+  const seeTheNamesofTheRolesButGetTheIdBack = await connection.query(
+    "SELECT * FROM roles",
+    
+  );
+  const rolesArray = seeTheNamesofTheRolesButGetTheIdBack.map(role => ({
+    name: role.title, 
+    value: role.id}))
+    // inquirer accepts this and the user views thee name of the worker and the value of the worker's id is returned
+  console.log(rolesArray);
+  const employeeAnswers = await inquirer.prompt([
     {
       type: "input",
       name: "first_name",
@@ -76,21 +89,26 @@ async function employeeAdd() {
       message: "Enter the employee's last name",
     },
     {
-      type: "input",
-      name: "role",
+      type: "list",
+      name: "role_id",
       message: "What is the employee's role?",
+      choices: rolesArray
       // provide a list from exisiting roles?
     },
     {
       type: "input",
-      name: "manager",
+      name: "manager_id",
       message: "Who is the employee's manager?",
       // provide a list from existing managers?
+      // make sure question names are the same as column names!
     },
   ]);
-  console.log(employeeAnswers)
-  connection.end()
+  console.log(employeeAnswers);
+  // connection.query();
 }
+
+// see icecream CRUD 9 - Keys same as column names allows pass the object.
+// HERE IS THE OBJECT THROW IT IN THE PLACEHOLDER (?) and Generate tables
 
 initialise();
 
