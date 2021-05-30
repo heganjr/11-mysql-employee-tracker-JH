@@ -93,6 +93,7 @@ async function employeeAdd() {
   const getEmployeeTableFromDb = await connection.query(
     "Select * FROM employees WHERE manager_status IS TRUE"
   );
+  // Manager_id = null = employee is a manager
   const managerArray = getEmployeeTableFromDb.map((manager) => ({
     name: `${manager.first_name} ${manager.last_name}`,
     value: manager.id,
