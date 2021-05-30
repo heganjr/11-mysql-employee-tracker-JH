@@ -18,8 +18,8 @@ connection.connect((err) => {
   console.log(`connected to ${connection.config.database}`);
 });
 
-connection.query = util.promisify(connection.query)
-// set up of async and await for connection.query
+connection.query = util.promisify(connection.query);
+// set up of async and await for connection.query to fufill promise
 
 async function initialise() {
   const answers = await inquirer.prompt([
@@ -69,14 +69,25 @@ async function addIntoEmployeeDB() {
 
 async function employeeAdd() {
   const seeTheNamesofTheRolesButGetTheIdBack = await connection.query(
-    "SELECT * FROM roles",
-    
+    "SELECT * FROM roles"
   );
-  const rolesArray = seeTheNamesofTheRolesButGetTheIdBack.map(role => ({
-    name: role.title, 
-    value: role.id}))
-    // inquirer accepts this and the user views thee name of the worker and the value of the worker's id is returned
-  console.log(rolesArray);
+  const rolesArray = seeTheNamesofTheRolesButGetTheIdBack.map((role) => ({
+    name: role.title,
+    value: role.id,
+  }));
+  // inquirer accepts this and the user sees the name of the worker and the value of the worker's id is returned
+
+  const getEmployeeTableFromDb = await connection.query(
+    "Select * FROM employees"
+  );
+  const managerArray = getEmployeeTableFromDb.map((manager) => ({
+    name: `${manager.first_name} ${manager.last_name}`,
+    value: manager.id,
+  }));
+  console.log(managerArray);
+  // how to only show managers and not all employees?
+  // if id = manager_id show else, dont show
+
   const employeeAnswers = await inquirer.prompt([
     {
       type: "input",
@@ -92,19 +103,34 @@ async function employeeAdd() {
       type: "list",
       name: "role_id",
       message: "What is the employee's role?",
-      choices: rolesArray
+      choices: rolesArray,
       // provide a list from exisiting roles?
     },
     {
-      type: "input",
+      type: "list",
       name: "manager_id",
       message: "Who is the employee's manager?",
+      choices: managerArray,
       // provide a list from existing managers?
       // make sure question names are the same as column names!
     },
   ]);
   console.log(employeeAnswers);
-  // connection.query();
+
+  try {
+    await connection.query(
+      "INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
+      [
+        employeeAnswers.first_name,
+        employeeAnswers.last_name,
+        employeeAnswers.role_id,
+        employeeAnswers.manager_id,
+      ],
+      console.log("Employee add success!")
+    );
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // see icecream CRUD 9 - Keys same as column names allows pass the object.
