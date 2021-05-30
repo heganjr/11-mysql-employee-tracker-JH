@@ -161,13 +161,9 @@ async function employeeAdd() {
 
 // HERE IS THE OBJECT THROW IT IN THE PLACEHOLDER (?) and Generate tables
 
-// async function departmentsAdd(){
-//   const departmentAnswers = await inquirer.prompt([
-
-//   ]
-//     )
-
-// }
+async function departmentsAdd() {
+  const departmentAnswers = await inquirer.prompt([]);
+}
 
 async function viewEmployeeDB() {
   const whichTableToView = await inquirer.prompt([
@@ -194,22 +190,85 @@ async function viewEmployeeDB() {
   }
 }
 
-async function employeeTableView(){
- const employeeTable = await connection.query("SELECT * FROM employees")
- console.table(employeeTable)
+async function employeeTableView() {
+  const employeeTable = await connection.query("SELECT * FROM employees");
+  console.table(employeeTable);
 }
 
-async function departmentsTableView(){
- const employeeDepartments = await connection.query("SELECT * FROM departments")
- console.table(employeeDepartments)
+async function departmentsTableView() {
+  const employeeDepartments = await connection.query(
+    "SELECT * FROM departments"
+  );
+  console.table(employeeDepartments);
 }
 
- async function rolesTableView(){
- const employeeRoles = await connection.query("SELECT * FROM roles")
- console.table(employeeRoles)
- }
+async function rolesTableView() {
+  const employeeRoles = await connection.query("SELECT * FROM roles");
+  console.table(employeeRoles);
+}
+
+async function updateEmployeeDB() {
+  const whichTableToUpdate = await inquirer.prompt([
+    {
+      type: "list",
+      name: "chosenTable",
+      message: "What would you like to view?",
+      choices: ["Employees", "Departments", "Roles"],
+    },
+  ]);
+
+  switch (whichTableToUpdate.chosenTable) {
+    case "Employees":
+      updateEmployees();
+      break;
+
+    case "Departments":
+      updateDepartments();
+      break;
+
+    case "Roles":
+      updateRoles();
+      break;
+  }
+}
 
 // see icecream CRUD 9 - Keys same as column names allows pass the object.
+
+async function updateEmployees() {
+  const getEmployeesTableFromDB = await connection.query(
+    "SELECT * FROM employees"
+  );
+  const employeeTables = getEmployeesTableFromDB.map((employees) => ({
+    name: `${employees.first_name} ${employees.last_name}`,
+    value: employees.id,
+  }));
+
+  const getRolesTableFromDB = await connection.query("SELECT * FROM roles");
+  const employeeRoles = getRolesTableFromDB.map((roles) => ({
+    name: roles.title,
+    value: roles.id,
+  }));
+
+  console.log(employeeRoles);
+  const updateQuestions = await inquirer.prompt([
+    {
+      type: "list",
+      name: "employeeSelection",
+      message: "Which employee would you like to update?",
+      choices: employeeTables,
+    },
+    {
+      type: "list",
+      name: "roleSelection",
+      message: "What is their new role?",
+      choices: employeeRoles,
+    },
+  ]);
+  connection.query("UPDATE employees SET role_id = ? WHERE id = ?", [
+    updateQuestions.roleSelection,
+    updateQuestions.employeeSelection,
+  ]);
+}
 
 initialise();
 
