@@ -32,7 +32,3 @@ insert into departments(department_name) values ("HR"),("Finance"),("Customer Se
 insert into roles(title,salary,department_id) values ("Accountant", 65000, 2), ("Manager", 70000, 1), ("HR Receptionist", 50000, 1);
 
 insert into employees(first_name,last_name,role_id,manager_id, manager_status) values ("Bob","Smith", 2, null, 1), ("Donna","Edwards", 3, 1, 0);
-
-Select id, manager_id FROM employees CASE WHEN id = manager_id THEN true ELSE false END AS manager_status FROM employees
-
-Select * FROM employees WHERE manager_status IS TRUE

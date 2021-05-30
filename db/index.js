@@ -89,6 +89,7 @@ async function employeeAdd() {
     name: `${manager.first_name} ${manager.last_name}`,
     value: manager.id,
   }));
+  // get the manager's id and link to the employee of their manager
   console.log(managerArray);
   // how to only show managers and not all employees?
   // if id = manager_id show else, dont show
@@ -124,6 +125,7 @@ async function employeeAdd() {
       when(employeeAnswers) {
         return employeeAnswers.manager_status === false;
       },
+      // ask this question when they are not a manager
       // the purpose of return is so inquirer knows what the returned value.
 
       // provide a list from existing managers?
