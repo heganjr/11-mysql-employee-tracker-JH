@@ -16,7 +16,6 @@ const connection = mysql.createConnection({
 
 connection.connect((err) => {
   if (err) throw err;
-  console.log(`connected to ${connection.config.database}`);
 });
 
 connection.query = util.promisify(connection.query);
@@ -35,17 +34,14 @@ async function initialise() {
   switch (answers.task) {
     case "Add":
       addIntoEmployeeDB();
-      console.log("Add");
       break;
 
     case "View":
       viewEmployeeDB();
-      console.log("View");
       break;
 
     case "Update":
       updateEmployeeDB();
-      console.log("Update");
       break;
   }
 }
@@ -99,7 +95,6 @@ async function employeeAdd() {
     value: manager.id,
   }));
   // get the manager's id and link to the employee of their manager
-  console.log(managerArray);
   // how to only show managers and not all employees?
   // if id = manager_id show else, dont show
 
@@ -141,7 +136,6 @@ async function employeeAdd() {
       // make sure question names are the same as column names!
     },
   ]);
-  console.log(employeeAnswers);
 
   try {
     await connection.query(
@@ -153,7 +147,9 @@ async function employeeAdd() {
         employeeAnswers.manager_id,
         employeeAnswers.manager_status,
       ],
-      console.log("Employee add success!")
+      console.log("Employee add success!"),
+      connection.end()
+      
     );
   } catch (error) {
     console.error(error);
@@ -218,7 +214,7 @@ async function rolesAdd() {
         newRoleQuestions.department_id,
       ]
     );
-    console.log("New role added!")
+    console.log("New role added!");
   } catch (error) {
     console.error(error);
   }
@@ -311,7 +307,6 @@ async function updateEmployees() {
     value: roles.id,
   }));
 
-  console.log(employeeRoles);
   const updateQuestions = await inquirer.prompt([
     {
       type: "list",
