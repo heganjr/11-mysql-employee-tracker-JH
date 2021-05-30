@@ -2,6 +2,7 @@ const mysql = require("mysql2");
 const inquirer = require(`inquirer`);
 const util = require("util");
 const { connect } = require("http2");
+const cTable = require("console.table");
 // additional methods to set up as a promise to fix query promise issue
 // linking modules
 
@@ -30,7 +31,6 @@ async function initialise() {
       message: "What would you like to do?",
     },
   ]);
-  console.log(answers.task);
 
   switch (answers.task) {
     case "Add":
@@ -63,6 +63,14 @@ async function addIntoEmployeeDB() {
   switch (tableAnswer.chosenTable) {
     case "Employees":
       employeeAdd();
+      break;
+
+    case "Departments":
+      departmentsAdd();
+      break;
+
+    case "Roles":
+      rolesAdd();
       break;
   }
 }
@@ -151,8 +159,57 @@ async function employeeAdd() {
   }
 }
 
-// see icecream CRUD 9 - Keys same as column names allows pass the object.
 // HERE IS THE OBJECT THROW IT IN THE PLACEHOLDER (?) and Generate tables
+
+// async function departmentsAdd(){
+//   const departmentAnswers = await inquirer.prompt([
+
+//   ]
+//     )
+
+// }
+
+async function viewEmployeeDB() {
+  const whichTableToView = await inquirer.prompt([
+    {
+      type: "list",
+      name: "chosenTable",
+      message: "What would you like to view?",
+      choices: ["Employees", "Departments", "Roles"],
+    },
+  ]);
+
+  switch (whichTableToView.chosenTable) {
+    case "Employees":
+      employeeTableView();
+      break;
+
+    case "Departments":
+      departmentsTableView();
+      break;
+
+    case "Roles":
+      rolesTableView();
+      break;
+  }
+}
+
+async function employeeTableView(){
+ const employeeTable = await connection.query("SELECT * FROM employees")
+ console.table(employeeTable)
+}
+
+async function departmentsTableView(){
+ const employeeDepartments = await connection.query("SELECT * FROM departments")
+ console.table(employeeDepartments)
+}
+
+ async function rolesTableView(){
+ const employeeRoles = await connection.query("SELECT * FROM roles")
+ console.table(employeeRoles)
+ }
+
+// see icecream CRUD 9 - Keys same as column names allows pass the object.
 
 initialise();
 
@@ -166,14 +223,14 @@ initialise();
 //prompt for employee first name, last name, manager name, role title - Done
 //based on manager name, get manager id
 //based on role title, get role id
-//isert record into database
+//isert record into database- Done
 
 //role table:
 //prompt for role name and department name
 //based on department name, get department ID
 //insert record into database
 
-//ask user if they want to view or update db entries
+//ask user if they want to view or update db entries - Done
 
 // View (departments, roles, employees)
 //prompt user to choose dept, role or employee
