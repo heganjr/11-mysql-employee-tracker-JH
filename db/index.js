@@ -148,14 +148,15 @@ async function employeeAdd() {
         employeeAnswers.manager_status,
       ],
       console.log("Employee add success!"),
-      connection.end()
       
     );
   } catch (error) {
     console.error(error);
   }
-  connection.end();
+  await connection.end();
+  
 }
+// connection end bug - doesnt end connection if placed within query, ends but doesnt update query
 
 // HERE IS THE OBJECT THROW IT IN THE PLACEHOLDER (?) and Generate tables
 
@@ -271,7 +272,7 @@ async function updateEmployeeDB() {
     {
       type: "list",
       name: "chosenTable",
-      message: "What would you like to view?",
+      message: "What would you like to update?",
       choices: ["Employees", "Departments", "Roles"],
     },
   ]);

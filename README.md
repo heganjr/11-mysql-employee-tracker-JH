@@ -3,7 +3,7 @@ by Jacob Hegan
 
 UWA Full-Flex Bootcamp February 2021
 
-[Video Walkthrough]()
+[Video Walkthrough](https://drive.google.com/file/d/1N8ZWlif9l5wBm32CdxMpNeMvDN-seClf/view)
 
 [GitHub Repository](https://github.com/heganjr/11-mysql-employee-tracker-JH)
 
