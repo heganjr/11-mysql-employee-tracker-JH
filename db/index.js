@@ -157,12 +157,29 @@ async function employeeAdd() {
   } catch (error) {
     console.error(error);
   }
+  connection.end();
 }
 
 // HERE IS THE OBJECT THROW IT IN THE PLACEHOLDER (?) and Generate tables
 
 async function departmentsAdd() {
-  const departmentAnswers = await inquirer.prompt([]);
+  const departmentAnswers = await inquirer.prompt([
+    {
+      type: "input",
+      name: "department_name",
+      message: "What is the name of the new department?",
+    },
+  ]);
+
+  try {
+    connection.query("INSERT into departments (department_name) VALUES (?)", [
+      departmentAnswers.department_name,
+    ]);
+    console.log("Department added!");
+  } catch (error) {
+    console.error(error);
+  }
+  connection.end();
 }
 
 async function viewEmployeeDB() {
@@ -193,6 +210,7 @@ async function viewEmployeeDB() {
 async function employeeTableView() {
   const employeeTable = await connection.query("SELECT * FROM employees");
   console.table(employeeTable);
+  connection.end();
 }
 
 async function departmentsTableView() {
@@ -200,11 +218,13 @@ async function departmentsTableView() {
     "SELECT * FROM departments"
   );
   console.table(employeeDepartments);
+  connection.end();
 }
 
 async function rolesTableView() {
   const employeeRoles = await connection.query("SELECT * FROM roles");
   console.table(employeeRoles);
+  connection.end();
 }
 
 async function updateEmployeeDB() {
@@ -222,17 +242,16 @@ async function updateEmployeeDB() {
       updateEmployees();
       break;
 
-    case "Departments":
-      updateDepartments();
-      break;
+    // case "Departments":
+    //   updateDepartments();
+    //   break;
 
-    case "Roles":
-      updateRoles();
-      break;
+    // case "Roles":
+    //   updateRoles();
+    //   break;
+    // WILL BE UPDATED AT A LATER POINT
   }
 }
-
-// see icecream CRUD 9 - Keys same as column names allows pass the object.
 
 async function updateEmployees() {
   const getEmployeesTableFromDB = await connection.query(
@@ -268,9 +287,12 @@ async function updateEmployees() {
     updateQuestions.roleSelection,
     updateQuestions.employeeSelection,
   ]);
+  connection.end();
 }
 
 initialise();
+
+// see icecream CRUD 9 - Keys same as column names allows pass the object.
 
 // create database based on readme instructions - DONE
 
