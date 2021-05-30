@@ -77,8 +77,13 @@ async function employeeAdd() {
   }));
   // inquirer accepts this and the user sees the name of the worker and the value of the worker's id is returned
 
+  // await connection.query(
+  //   "Select id, manager_id, CASE WHEN id = manager_id THEN true ELSE false END AS manager_status FROM employees"
+  // );
+  // Compares Id and Manager ID - If both are the same therefore person is a manager and only that name populates in the "Who their manager"
+
   const getEmployeeTableFromDb = await connection.query(
-    "Select * FROM employees"
+    "Select * FROM employees WHERE manager_status IS TRUE"
   );
   const managerArray = getEmployeeTableFromDb.map((manager) => ({
     name: `${manager.first_name} ${manager.last_name}`,
@@ -107,10 +112,20 @@ async function employeeAdd() {
       // provide a list from exisiting roles?
     },
     {
+      type: "confirm",
+      name: "manager_status",
+      message: "Is this employee a manager?",
+    },
+    {
       type: "list",
       name: "manager_id",
       message: "Who is the employee's manager?",
       choices: managerArray,
+      when(employeeAnswers) {
+        return employeeAnswers.manager_status === false;
+      },
+      // the purpose of return is so inquirer knows what the returned value.
+
       // provide a list from existing managers?
       // make sure question names are the same as column names!
     },
@@ -119,12 +134,13 @@ async function employeeAdd() {
 
   try {
     await connection.query(
-      "INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
+      "INSERT INTO employees (first_name, last_name, role_id, manager_id, manager_status) VALUES (?, ?, ?, ?, ?)",
       [
         employeeAnswers.first_name,
         employeeAnswers.last_name,
         employeeAnswers.role_id,
         employeeAnswers.manager_id,
+        employeeAnswers.manager_status,
       ],
       console.log("Employee add success!")
     );
