@@ -182,6 +182,48 @@ async function departmentsAdd() {
   connection.end();
 }
 
+async function rolesAdd() {
+  const getDepartmentTableFromDB = await connection.query(
+    "SELECT * from departments"
+  );
+  const departmentArray = await getDepartmentTableFromDB.map((departments) => ({
+    name: departments.department_name,
+    value: departments.id,
+  }));
+  const newRoleQuestions = await inquirer.prompt([
+    {
+      type: "input",
+      name: "title",
+      message: "What is the title of the new role?",
+    },
+    {
+      type: "number",
+      name: "salary",
+      message: "How much salary does this role receive?",
+    },
+    {
+      type: "list",
+      name: "department_id",
+      message: "Which department is this role in?",
+      choices: departmentArray,
+    },
+  ]);
+  try {
+    await connection.query(
+      "INSERT into roles (title, salary,department_id) VALUES (?, ?, ?)",
+      [
+        newRoleQuestions.title,
+        newRoleQuestions.salary,
+        newRoleQuestions.department_id,
+      ]
+    );
+    console.log("New role added!")
+  } catch (error) {
+    console.error(error);
+  }
+  connection.end();
+}
+
 async function viewEmployeeDB() {
   const whichTableToView = await inquirer.prompt([
     {
